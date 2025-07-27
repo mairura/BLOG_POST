@@ -69,7 +69,18 @@ export class UserService {
     return this.generateUserResponse(user);
   }
 
+  async findById(id: number): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  }
+
   generateUserResponse(user: UserEntity): IUserResponse {
+    if (!user.id) {
+      throw new HttpException('User data is missing', HttpStatus.BAD_REQUEST);
+    }
     return {
       user: {
         ...user,
