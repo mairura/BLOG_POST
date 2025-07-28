@@ -6,6 +6,7 @@ import { AuthGuard } from '@/user/guards/auth.guard';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -33,5 +34,11 @@ export class ArticleController {
   async getArticle(@Param('slug') slug: string): Promise<IArticleResponse> {
     const article = await this.articleService.getSingleArticle(slug);
     return this.articleService.generateArticleResponse(article);
+  }
+
+  @Delete(':slug')
+  @UseGuards(AuthGuard)
+  async deleteArticle(@Param('slug') slug: string, @User('id') currentUserId: number) {
+    return await this.articleService.deleteArticle(slug, currentUserId);
   }
 }
