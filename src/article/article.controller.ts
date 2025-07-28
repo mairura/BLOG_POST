@@ -2,6 +2,7 @@ import { ArticleService } from '@/article/article.service';
 import { CreateArticleDto } from '@/article/dto/createArticle.dto';
 import { UpdateArticleDto } from '@/article/dto/updateArticle.dto';
 import { IArticleResponse } from '@/article/types/articleResponse.interface';
+import { IArticlesResponse } from '@/article/types/articlesResponse.interface';
 import { User } from '@/user/decorators/user.decorator';
 import { AuthGuard } from '@/user/guards/auth.guard';
 import {
@@ -12,6 +13,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -57,5 +59,10 @@ export class ArticleController {
       updateArticleDto,
     );
     return this.articleService.generateArticleResponse(updatedArticle);
+  }
+
+  @Get()
+  async findAll(@Query() query: any): Promise<IArticlesResponse> {
+    return await this.articleService.findAll(query);
   }
 }
