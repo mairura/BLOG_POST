@@ -2,7 +2,7 @@ import { ArticleEntity } from '@/article/article.entity';
 import { CreateArticleDto } from '@/article/dto/createArticle.dto';
 import { IArticleResponse } from '@/article/types/articleResponse.interface';
 import { UserEntity } from '@/user/user.entity';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import slugify from 'slugify';
 import { Repository } from 'typeorm';
@@ -31,6 +31,18 @@ export class ArticleService {
     article.author = user;
 
     return await this.articleRepository.save(article);
+  }
+
+  async getSingleArticle(slug: string): Promise<ArticleEntity> {
+    const article = await this.articleRepository.findOne({
+      where: { slug },
+    });
+
+    if (!article) {
+      throw new HttpException('Article not found', HttpStatus.NOT_FOUND);
+    }
+
+    return article;
   }
 
   generateSlug(title: string): string {
